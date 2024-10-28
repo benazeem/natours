@@ -2,6 +2,7 @@ const fs = require('fs');
 const catchAsync = require('../utils/catchAsync');
 const User = require('../models/userModel');
 const AppError = require('../utils/appError');
+const factory = require('./handlerFactory');
 
 const users = JSON.parse(
   fs.readFileSync(`${__dirname}/../dev-data/data/users.json`),
@@ -67,36 +68,38 @@ exports.getUser = (req, res) => {
   res.status(200).json(reqTour);
 };
 
-exports.deleteUser = (req, res) => {
-  const id = req.params.id * 1;
+exports.deleteUser = factory.deleteDoc(User);
 
-  const newusers = users.filter((el) => {
-    if (el._id === id) {
-      return null;
-    } else return el;
-  });
+// exports.deleteUser = (req, res) => {
+//   const id = req.params.id * 1;
+//   const newusers = users.filter((el) => {
+//     if (el._id === id) {
+//       return null;
+//     } else return el;
+//   });
 
-  if (id > users.length) {
-    return res.status(404).json({
-      status: 'fail',
-      message: 'Unable to Find User',
-    });
-  }
+//   if (id > users.length) {
+//     //Comment this
+//     return res.status(404).json({
+//       status: 'fail',
+//       message: 'Unable to Find User',
+//     });
+//   }
 
-  fs.writeFile(
-    `${__dirname}/dev-data/data/users.json`,
-    JSON.stringify(newusers),
-    (err) => {
-      if (err) {
-        res.status(500).json({
-          status: 'fail',
-          message: 'Unable to delete User',
-        });
-      }
-    },
-  );
-  res.status(204).send(null);
-};
+//   fs.writeFile(
+//     `${__dirname}/dev-data/data/users.json`,
+//     JSON.stringify(newusers),
+//     (err) => {
+//       if (err) {
+//         res.status(500).json({
+//           status: 'fail',
+//           message: 'Unable to delete User',
+//         });
+//       }
+//     },
+//   );
+//   res.status(204).send(null);
+// };
 
 exports.updateMe = catchAsync(async (req, res, next) => {
   //1) Create error if user try to post password
