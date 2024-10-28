@@ -90,15 +90,16 @@ exports.getMonthlyPlan = catchAsync(async (req, res, next) => {
   });
 });
 
-exports.createTour = catchAsync(async (req, res, next) => {
-  const newTour = await Tour.create(req.body);
-  res.status(201).json({
-    status: 'success',
-    data: {
-      tour: newTour,
-    },
-  });
-});
+exports.createTour = factory.createDoc(Tour)
+// exports.createTour = catchAsync(async (req, res, next) => {
+//   const newTour = await Tour.create(req.body);
+//   res.status(201).json({
+//     status: 'success',
+//     data: {
+//       tour: newTour,
+//     },
+//   });
+// });
 
 exports.getTour = catchAsync(async (req, res, next) => {
   const tour = await Tour.findById(req.params.id)
@@ -127,17 +128,18 @@ exports.getTour = catchAsync(async (req, res, next) => {
 // });
 
 exports.deleteTour = factory.deleteDoc(Tour);
+exports.updateTour  = factory.updateDoc(Tour)
 
-exports.updateTour = catchAsync(async (req, res, next) => {
-  const tour = await Tour.findByIdAndUpdate(req.params.id, req.body, {
-    new: true,
-    runValidators: true,
-  });
-  if (!tour) {
-    return next(new AppError(`This (${req.params.id}) id is invalid`, 404));
-  }
-  res.status(200).json({
-    status: 'success',
-    data: { tour },
-  });
-});
+// exports.updateTour = catchAsync(async (req, res, next) => {
+//   const tour = await Tour.findByIdAndUpdate(req.params.id, req.body, {
+//     new: true,
+//     runValidators: true,
+//   });
+//   if (!tour) {
+//     return next(new AppError(`This (${req.params.id}) id is invalid`, 404));
+//   }
+//   res.status(200).json({
+//     status: 'success',
+//     data: { tour },
+//   });
+// });

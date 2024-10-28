@@ -15,3 +15,29 @@ exports.deleteDoc = (Model) =>
       data: null,
     });
   });
+
+  exports.updateDoc = Model => 
+    catchAsync(async (req, res, next) => {
+      const doc = await Model.findByIdAndUpdate(req.params.id, req.body, {
+        new: true,
+        runValidators: true,
+      });
+      if (!doc) {
+        return next(new AppError(`This (${req.params.id}) id is invalid`, 404));
+      }
+      res.status(200).json({
+        status: 'success',
+        data: { 
+          data: doc },
+      });
+    });
+  
+  exports.createDoc = Model => catchAsync(async (req, res, next) => {
+    const doc = await Model.create(req.body);
+    res.status(201).json({
+      status: 'success',
+      data: {
+     data: doc
+      },
+    });
+  });

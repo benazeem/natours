@@ -70,6 +70,8 @@ exports.getUser = (req, res) => {
 
 exports.deleteUser = factory.deleteDoc(User);
 
+exports.updateUser = factory.updateDoc(User)
+
 // exports.deleteUser = (req, res) => {
 //   const id = req.params.id * 1;
 //   const newusers = users.filter((el) => {
@@ -137,6 +139,3 @@ exports.deleteMe = catchAsync(async (req, res, next) => {
   });
 });
 
-exports.updateUser = (req, res) => {
-  console.log(req.body);
-};
