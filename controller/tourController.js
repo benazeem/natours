@@ -2,6 +2,7 @@ const Tour = require('../models/tourModel');
 const APIFeatures = require('../utils/apiFeatures');
 const AppError = require('../utils/appError');
 const catchAsync = require('../utils/catchAsync');
+const factory = require('./handlerFactory');
 
 exports.aliasTopTours = (req, res, next) => {
   req.query.limit = '5';
@@ -100,10 +101,12 @@ exports.createTour = catchAsync(async (req, res, next) => {
 });
 
 exports.getTour = catchAsync(async (req, res, next) => {
-  const tour = await Tour.findById(req.params.id).populate({
-    path: 'guides',
-    select: '-__v -passwordChangedAt',
-  });
+  const tour = await Tour.findById(req.params.id)
+    .populate({
+      path: 'guides',
+      select: '-__v -passwordChangedAt',
+    })
+    .populate('reviews');
 
   if (!tour) {
     return next(new AppError(`This (${req.params.id}) id is invalid`, 404));
@@ -115,13 +118,15 @@ exports.getTour = catchAsync(async (req, res, next) => {
   });
 });
 
-exports.deleteTour = catchAsync(async (req, res, next) => {
-  const tour = await Tour.findOneAndDelete({ _id: req.params.id });
-  if (!tour) {
-    return next(new AppError(`This (${req.params.id}) id is invalid`, 404));
-  }
-  res.status(204).send(null);
-});
+// exports.deleteTour = catchAsync(async (req, res, next) => {
+//   const tour = await Tour.findOneAndDelete({ _id: req.params.id });
+//   if (!tour) {
+//     return next(new AppError(`This (${req.params.id}) id is invalid`, 404));
+//   }
+//   res.status(204).send(null);
+// });
+
+exports.deleteTour = factory.deleteDoc(Tour);
 
 exports.updateTour = catchAsync(async (req, res, next) => {
   const tour = await Tour.findByIdAndUpdate(req.params.id, req.body, {
