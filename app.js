@@ -24,7 +24,17 @@ app.set('views', path.join(__dirname, 'views'));
 app.use(express.static(path.join(__dirname, 'public'))); //Serve static files
 
 //GLOBAL MIDDLEWARES
-app.use(helmet()); //Set Security HTTP Headers
+app.use(
+  helmet.contentSecurityPolicy({
+    directives: {
+      defaultSrc: ["'self'", 'https:', 'http:', 'data:', 'ws:'],
+      baseUri: ["'self'"],
+      fontSrc: ["'self'", 'https:', 'http:', 'data:'],
+      scriptSrc: ["'self'", 'https:', 'http:', 'blob:'],
+      styleSrc: ["'self'", "'unsafe-inline'", 'https:', 'http:'],
+    },
+  })
+);//Set Security HTTP Headers
 if (process.env.NODE_ENV === 'development') {
   app.use(morgan('dev')); //Development Logging
 }
@@ -60,7 +70,6 @@ app.use(
 //Test Middleware
 app.use((req, res, next) => {
   req.requestTime = new Date().toISOString();
-  console.log(req.cookies);
   next();
 });
 

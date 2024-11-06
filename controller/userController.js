@@ -28,7 +28,7 @@ exports.getMe = async (req,res,next) =>{
 
 exports.updateMe = catchAsync(async (req, res, next) => {
   //1) Create error if user try to post password
-  // console.log(req);
+
   if (req.body.password || req.body.passwordConfirm) {
     return next(
       new AppError(

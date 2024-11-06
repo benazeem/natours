@@ -3,7 +3,7 @@ extends base
 block append head
  script(src='https://api.mapbox.com/mapbox-gl-js/v2.9.1/mapbox-gl.js' )
  link(href='https://api.mapbox.com/mapbox-gl-js/v2.9.1/mapbox-gl.css' rel='stylesheet')
-
+//-  meta(http-equiv="Content-Security-Policy" content=" default-src 'self' data: ws: blob; connect-src 'self' https://api.mapbox.com ws://localhost:1234; script-src 'self' https://api.mapbox.com blob:; script-src-elem 'self' https://api.mapbox.com; style-src 'self' https://api.mapbox.com;    font-src 'self' https://fonts.gstatic.com;")
 
 
 mixin reviewCard(review)
