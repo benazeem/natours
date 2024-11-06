@@ -42,7 +42,7 @@ const tourSchema = new mongoose.Schema(
       default: 4.0,
       min: [1.0, 'A tour rating must be greater or equal to 1.0'],
       max: [5.0, 'A tour rating must be lesser or equal to 5.0'],
-      set: val=> Math.round(val*10)/10
+      set: (val) => Math.round(val * 10) / 10,
     },
     ratingsQuantity: {
       type: Number,
@@ -117,9 +117,9 @@ const tourSchema = new mongoose.Schema(
 );
 
 // tourSchema.index({price: 1})
-tourSchema.index({price: 1, ratingsAverage:-1})
-tourSchema.index({slug: 1})
-tourSchema.index({startLocation:'2dsphere'})
+tourSchema.index({ price: 1, ratingsAverage: -1 });
+tourSchema.index({ slug: 1 });
+tourSchema.index({ startLocation: '2dsphere' });
 
 tourSchema.virtual('durationWeeks').get(function () {
   return this.duration / 7;
@@ -143,6 +143,14 @@ tourSchema.virtual('reviews', {
 // DOCUMENT MIDDLEWARE
 tourSchema.pre('save', function (next) {
   this.slug = slufig(this.name, { lower: true });
+  next();
+});
+
+tourSchema.pre(/^find/, function (next) {
+  this.populate({
+    path: 'guides',
+    select: '-__v -passwordChangedAt',
+  });
   next();
 });
 
