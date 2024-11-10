@@ -588,9 +588,12 @@ var _webImmediateJs = require("core-js/modules/web.immediate.js");
 var _runtime = require("regenerator-runtime/runtime");
 var _login = require("./login");
 var _mapbox = require("./mapbox");
+var _updateSettings = require("./updateSettings");
 const mapBox = document.getElementById("map");
-const loginForm = document.querySelector(".form");
+const loginForm = document.querySelector(".form--login");
 const logOutBtn = document.querySelector(".nav__el--logout");
+const updateDataForm = document.querySelector(".form-user-data");
+const updatePasswordForm = document.querySelector(".form-user-password");
 if (mapBox) {
     const locations = JSON.parse(mapBox.dataset.locations);
     (0, _mapbox.displayMap)(locations);
@@ -602,8 +605,32 @@ if (loginForm) loginForm.addEventListener("submit", (e)=>{
     (0, _login.login)(email, password);
 });
 if (logOutBtn) logOutBtn.addEventListener("click", (0, _login.logout));
+if (updateDataForm) updateDataForm.addEventListener("submit", (e)=>{
+    e.preventDefault();
+    const form = new FormData();
+    form.append("name", document.getElementById("name").value);
+    form.append("email", document.getElementById("email").value);
+    form.append("photo", document.getElementById("photo").files[0]);
+    (0, _updateSettings.updateSettings)(form, "data");
+});
+if (updatePasswordForm) updatePasswordForm.addEventListener("submit", (e)=>{
+    e.preventDefault();
+    const passwordCurrent = document.getElementById("password-current").value;
+    const passwordUpdate = document.getElementById("password").value;
+    const passwordConfirm = document.getElementById("password-confirm").value;
+    document.querySelector(".btn--save-password").textContent = "Updating...";
+    (0, _updateSettings.updateSettings)({
+        passwordCurrent,
+        passwordUpdate,
+        passwordConfirm
+    }, "password");
+    document.querySelector(".btn--save-password").textContent = "Save Password";
+    passwordCurrent = "";
+    passwordUpdate = "";
+    passwordConfirm = "";
+});
 
-},{"core-js/modules/web.immediate.js":"49tUX","regenerator-runtime/runtime":"dXNgZ","./login":"7yHem","./mapbox":"3zDlz"}],"49tUX":[function(require,module,exports) {
+},{"core-js/modules/web.immediate.js":"49tUX","regenerator-runtime/runtime":"dXNgZ","./login":"7yHem","./mapbox":"3zDlz","./updateSettings":"l3cGY"}],"49tUX":[function(require,module,exports) {
 "use strict";
 // TODO: Remove this module from `core-js@4` since it's split to modules listed below
 require("52e9b3eefbbce1ed");
@@ -7513,6 +7540,33 @@ const displayMap = (locations)=>{
     });
 };
 
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}]},["gTVKZ","f2QDv"], "f2QDv", "parcelRequire11c7")
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"l3cGY":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "updateSettings", ()=>updateSettings);
+var _axios = require("axios");
+var _axiosDefault = parcelHelpers.interopDefault(_axios);
+var _alert = require("./alert");
+const updateSettings = async (data, type)=>{
+    try {
+        const url = type === "password" ? "http://localhost:3000/api/v1/users/updatePassword" : "http://localhost:3000/api/v1/users/updateMe";
+        const res = await (0, _axiosDefault.default)({
+            method: "PATCH",
+            url,
+            data
+        });
+        if (res.data.status === "success") {
+            (0, _alert.showAlert)("success", `${type.toUpperCase()} updated successfully!`);
+            window.setTimeout(()=>{
+                location.assign("/me");
+            }, 5000);
+        }
+    } catch (err) {
+        err.message = err.response?.data?.message ? err.response.data.message : err.message;
+        (0, _alert.showAlert)("error", err.message);
+    }
+};
+
+},{"axios":"jo6P5","./alert":"kxdiQ","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}]},["gTVKZ","f2QDv"], "f2QDv", "parcelRequire11c7")
 
 //# sourceMappingURL=index.js.map

@@ -1,7 +1,6 @@
 const Tour = require('../models/tourModel');
 const catchAsync = require('../utils/catchAsync');
-const Review = require('../models/reviewModel');
-const User = require('../models/userModel');
+const AppError = require('../utils/appError')
 
 exports.getOverview = catchAsync(async (req, res, next) => {
   // 1) Get Tour data from collection
@@ -21,7 +20,7 @@ exports.getTour = catchAsync(async (req, res, next) => {
     fields: 'review rating user',
   });
   if (!tour) {
-    return next(new AppError('No tour found with that name', 404));
+    return next(new AppError('There is no tour found with that name', 404));
   }
   // const reviews = await Review.find({ tour: tour.id });
   // const guides = await User.find({ _id: { $in: tour.guides } });
@@ -37,3 +36,9 @@ exports.getLogin = (req, res) => {
     title: 'User Login',
   });
 };
+
+exports.getMe = (req,res) =>{
+
+  res.status(200).render('user', {
+    title: `${req.user.name.split(' ')[0]}'s Account`,  })
+}

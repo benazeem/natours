@@ -2,7 +2,7 @@
 
 
 export const hideAlert = ()=>{
-  if(document.querySelector('.alert') ) el.parentElement.removeChild(document.querySelector('.alert'))
+  if(document.querySelector('.alert')) el.parentElement.removeChild(document.querySelector('.alert'))
 }
 
 export const showAlert = (type,msg)=>{
